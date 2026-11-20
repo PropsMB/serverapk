@@ -1,0 +1,23 @@
+databases:
+  - name: zmiana-test-db
+    databaseName: zmiana
+    user: zmiana
+    plan: free
+
+services:
+  - type: web
+    name: zmiana-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zmiana-test-db
+          property: connectionString
+      - key: ZM_SECRET
+        generateValue: true
+      - key: ZM_EMPLOYER_CODE
+        generateValue: true
